@@ -18,18 +18,18 @@ const treeFactory = (arr = []) => {
     return node;
   };
 
-  const root = builtTree(sortedArray, start, end);
+  let root = builtTree(sortedArray, start, end);
 
-  const insertNode = (data, node = root) => {
+  const insert = (data, node = root) => {
     if (node === null) {
       node = nodeFactory(data);
       return node;
     }
 
     if (node.data > data) {
-      node.left = insertNode(data, node.left);
+      node.left = insert(data, node.left);
     } else if (node.data < data) {
-      node.right = insertNode(data, node.right);
+      node.right = insert(data, node.right);
     }
     return node;
   };
@@ -165,7 +165,8 @@ const treeFactory = (arr = []) => {
   };
 
   const rebalance = () => {
-    // seguir aquí
+    let unbalancedArray = inOrder();
+    root = builtTree(unbalancedArray, 0, unbalancedArray.length - 1);
   };
   
   const getMinVal = (node) => {
@@ -180,10 +181,10 @@ const treeFactory = (arr = []) => {
     return min;
   };
 
-  return { root, insertNode, deleteNode, 
+  return { root, insert, deleteNode, 
     find, levelOrderIteration, levelOrderRecursion,
     inOrder, preOrder, postOrder, height, depth,
-    isBalanced };
+    isBalanced, rebalance };
 };
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -199,7 +200,43 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     }
   };
 
-const balancedTree = treeFactory([20, 30, 30, 32, 36, 40, 50, 50, 60, 65, 70, 70, 75, 80, 85, 85]);
-prettyPrint(balancedTree.root);
+const randomArray = () => {
+  let arr = [];
 
+  for (let i = 0; i < 20; i++) {
+    arr.push(Math.floor(Math.random() * 100));
+  }
+  return arr;
+};
 
+const addNumbers = (tree) => {
+  for (let i = 0; i < 20; i++) {
+    tree.insert(Math.floor(Math.random() * 100) + 100);
+  }
+};
+
+const treeScript = () => {
+  console.log('Create new tree \n');
+  const tree = treeFactory(randomArray());
+  console.log(`Is the tree balanced? => ${tree.isBalanced()} \n`);
+  console.log('========= Pre order =========');
+  tree.preOrder(console.log);
+  console.log('========= Post order ========');
+  tree.postOrder(console.log);
+  console.log('========== In order =========');
+  tree.inOrder(console.log);
+  console.log('Add 20 numbers above 100 \n');
+  addNumbers(tree);
+  console.log(`Is the tree balanced? => ${tree.isBalanced()} \n`);
+  console.log('Rebalance tree \n');
+  tree.rebalance();
+  console.log(`Is the tree balanced? => ${tree.isBalanced()} \n`);
+  console.log('========= Pre order =========');
+  tree.preOrder(console.log);
+  console.log('========= Post order ========');
+  tree.postOrder(console.log);
+  console.log('========== In order =========');
+  tree.inOrder(console.log);
+};
+
+treeScript();
